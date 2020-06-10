@@ -139,7 +139,15 @@ class TestExport(unittest.TestCase):
 
     @with_seed()
     def test_onnx_export_slice(self):
-            net = nn.HybridSequential(prefix='slice_net')
-            with net.name_scope():
-                net.add(nn.Dense(100, activation='relu'), SplitConcatBlock("splitConcat"), nn.Dense(10))
-            _check_onnx_export(net)
+        net = nn.HybridSequential(prefix='slice_net')
+        with net.name_scope():
+            net.add(nn.Dense(100, activation='relu'), SplitConcatBlock("split_concat"), nn.Dense(10))
+        _check_onnx_export(net)
+
+    @with_seed()
+    def test_onnx_export_slice_changing_shape(self):
+        net = nn.HybridSequential(prefix='slice_net_v2')
+        with net.name_scope():
+            net.add(nn.Dense(100, activation='relu'), SplitConcatBlock("split_concat"),
+                    nn.Dense(50, activation='relu'), SplitConcatBlock("split_concat_2"), nn.Dense(10))
+        _check_onnx_export(net)
